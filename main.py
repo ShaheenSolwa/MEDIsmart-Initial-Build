@@ -20,6 +20,10 @@ def allowed_file(filename):
 def index():
     return render_template('index.html')
 
+@main.route('/about')
+def about():
+    return render_template('About.html')
+
 @main.route('/profile') # profile page that return 'profile'
 @login_required
 def profile():

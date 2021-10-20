@@ -8,7 +8,7 @@ from flask_login import LoginManager
 
 # init SQLAlchemy so we can use it later in our models
 db = SQLAlchemy()
-UPLOAD_FOLDER = 'static/imgs/'
+UPLOAD_FOLDER = 'static/uploads/'
 
 def create_app():
     app = Flask(__name__) # creates the Flask instance, __name__ is the name of the current Python module
@@ -16,7 +16,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite' #it is the path where the SQLite database file will be saved
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # deactivate Flask-SQLAlchemy track modifications
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024
+    app.static_folder = 'static'
     db.init_app(app) # Initialiaze sqlite database
     # The login manager contains the code that lets your application and Flask-Login work together
     login_manager = LoginManager() # Create a Login Manager instance
