@@ -11,7 +11,7 @@ import os
 # our main blueprint
 main = Blueprint('main', __name__)
 
-ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = ('png', 'jpg', 'jpeg', 'gif')
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -24,10 +24,10 @@ def index():
 def about():
     return render_template('About.html')
 
-@main.route('/profile') # profile page that return 'profile'
+@main.route('/') # profile page that return 'profile'
 @login_required
 def profile():
-    return render_template('profile.html', name=current_user.name)
+    return render_template('index.html')
 
 @main.route('/pricing')
 def Pricing():
@@ -37,11 +37,32 @@ def Pricing():
 def Contribute():
     return render_template('contribute.html')
 
-@main.route('/upload')
-def upload_form():
-    return render_template('upload.html')
+@main.route('/contribute', methods=['POST'])
+def uploadContributions():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No image selected for uploading')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER']+'/contributions', filename))
+            # print('upload_image filename: ' + filename)
+            flash('Image successfully uploaded and displayed below')
+            return render_template('contribute.html', filename=filename)
+        else:
+            flash('Allowed image types are -> png, jpg, jpeg')
+            return redirect(request.url)
 
-@main.route('/upload', methods=['POST'])
+@main.route('/contribute/display/<filename>')
+def display_image2(filename):
+    # print('display_image filename: ' + filename)
+    return redirect(url_for('static', filename=app.config['UPLOAD_FOLDER']+'/contributions/' + filename), code=301)
+
+@main.route('/predict', methods=['POST'])
 def uploaded():
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -56,19 +77,22 @@ def uploaded():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             # print('upload_image filename: ' + filename)
             flash('Image successfully uploaded and displayed below')
-            return render_template('upload.html', filename=filename)
+            return render_template('predict.html', filename=filename)
         else:
-            flash('Allowed image types are -> png, jpg, jpeg, gif')
+            flash('Allowed image types are -> png, jpg, jpeg')
             return redirect(request.url)
 
-@main.route('/upload/display/<filename>')
+@main.route('/predict/display/<filename>')
 def display_image(filename):
     # print('display_image filename: ' + filename)
     return redirect(url_for('static', filename='uploads/' + filename), code=301)
 
-@main.route('/predict')
+@main.route('/predict', methods=['GET', 'POST'])
 def predict():
+    #select = request.form.get('tools')
+    #print(select)
     return render_template('predict.html')
+
 
 app = create_app() # we initialize our flask app using the __init__.py function
 if __name__ == '__main__':
