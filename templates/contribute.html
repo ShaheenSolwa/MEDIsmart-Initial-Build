@@ -14,6 +14,38 @@
 <!--
 ADD SUBMIT BUTTON FOR CONTRIBUTING DATA TO UPDATE MODELS
 -->
+<form method="post" action="/contribute" enctype="multipart/form-data">
+	<h2>Select a file to upload</h2>
+    <br/>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
+</p>
+
+{% if filename %}
+	<div>
+		<img src="{{ url_for('main.display_image2', filename=filename) }}">
+	</div>
+{% endif %}
+    <dl>
+		<p>
+			<input type="file" name="file" autocomplete="off" required>
+		</p>
+    </dl>
+
+    <br/>
+
+    <p>
+		<input type="submit" value="Submit">
+	</p>
+</form>
 
 <!--
 ADD CERTIFICATE OF PARTICIPATION

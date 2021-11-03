@@ -7,12 +7,50 @@
 <h2 class="subtitle">
     <br/>
     Please choose the AI medical tool to be used:
+	<br/>
 </h2>
 
-<button style="background-color: #e7e7e7; padding: 18px 16px;">CARIOLOGY</button>
-<button style="background-color: #e7e7e7; padding: 18px 16px;">NEUROLOGY</button>
-<button style="background-color: #e7e7e7; padding: 18px 16px;">OPTOMETRY</button>
-<button style="background-color: #e7e7e7; padding: 18px 16px;">DENTISTRY</button>
 
+<form method="post" action="/predict" enctype="multipart/form-data">
+	<label for="tools">Choose a model:</label>
+      <select name="tools" id="tools">
+          <option value="Chest">Chest</option>
+          <option value="Neurology">Neurology</option>
+          <option value="Optometry">Optometry</option>
+          <option value="Dentisry">Dentistry</option>
+      </select>
+	<br/>
+
+	<h2>Select a file to upload</h2>
+	<br/>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	{% endif %}
+	{% endwith %}
+</p>
+
+	<br/>
+
+{% if filename %}
+	<div>
+		<img src="{{ url_for('main.display_image', filename=filename) }}">
+	</div>
+{% endif %}
+    <dl>
+		<p>
+			<input type="file" name="file" autocomplete="off" required>
+		</p>
+    </dl>
+	<br/>
+    <p>
+		<input type="submit" value="Submit">
+	</p>
+</form>
 
 {% endblock %}
